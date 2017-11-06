@@ -20,6 +20,18 @@ def get_json(json_schema):
     return json.dumps(dict_)
 
 
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    """Function that does all the calculations."""
+    if request.method == 'POST':
+        print("inside")
+        json_schema = request.form['schema']
+        print(json_schema)
+        id_ = fake.uuid4()
+        api_end_point = request.url_root + id_
+        return api_end_point
+
+
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option(
