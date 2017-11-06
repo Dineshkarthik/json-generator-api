@@ -11,21 +11,12 @@ app.secret_key = hashlib.sha1(os.urandom(128)).hexdigest()
 fake = Faker()
 
 
-def generate_value(formator):
-    """Generate dummy value."""
-    if formator == "name":
-        return fake.name()
-    elif formator == "word":
-        return fake.text()
-    elif formator == "phone_number":
-        return fake.phone_number()
-
-
 def get_json(json_schema):
     """Function to generate json."""
     dict_ = {}
     for key, value in json_schema.items():
-        dict_[key] = generate_value(value)
+        generator_func = "fake." + value + "()"
+        dict_[key] = eval(generator_func)
     return json.dumps(dict_)
 
 
