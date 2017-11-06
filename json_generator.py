@@ -11,7 +11,7 @@ app.secret_key = hashlib.sha1(os.urandom(128)).hexdigest()
 fake = Faker()
 
 
-def get_json(json_schema):
+def generate_json(json_schema):
     """Function to generate json."""
     dict_ = {}
     for key, value in json_schema.items():
@@ -24,13 +24,17 @@ def get_json(json_schema):
 def index():
     """Function that does all the calculations."""
     if request.method == 'POST':
-        print("inside")
         json_schema = request.form['schema']
-        print(json_schema)
         id_ = fake.uuid4()
-        api_end_point = request.url_root + id_
+        api_end_point = request.url_root + "json/" + id_
         return api_end_point
 
+
+@app.route("/json/<id_>", methods=['GET'])
+def get_json(id_):
+    """Function that does all the calculations."""
+    if request.method == 'GET':
+        return id_
 
 if __name__ == "__main__":
     parser = OptionParser()
