@@ -36,6 +36,7 @@ def index():
             return api_end_point
         else:
             index()
+    return render_template('index.html')
 
 
 @app.route("/json/<id_>", methods=['GET'])
