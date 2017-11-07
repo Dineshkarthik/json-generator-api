@@ -37,6 +37,15 @@ $('#btn-submit').on('click', function() {
     var result = $('#schema-builder').queryBuilder('getRules');
 
     if (!$.isEmptyObject(result)) {
-        console.log(JSON.stringify(result, null, 2));
+        schema_obj = {};
+        form = new FormData();
+        result.rules.forEach(function(item) {
+            schema_obj[item.value] = item.id
+        });
+        $.ajax({
+            url: window.location.href,
+            data: "schema=" + JSON.stringify(schema_obj),
+            type: 'POST'
+        });
     }
 });
