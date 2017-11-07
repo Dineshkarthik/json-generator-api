@@ -45,7 +45,10 @@ $('#btn-submit').on('click', function() {
         $.ajax({
             url: window.location.href,
             data: "schema=" + JSON.stringify(schema_obj),
-            type: 'POST'
+            type: "POST",
+            success: function(resultData) {
+                location.href = location.href + "success/" + resultData
+            }
         });
     }
 });
