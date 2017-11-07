@@ -1,14 +1,18 @@
 """Script to generate json."""
 import os
+import ast
 import json
+import redis
 import hashlib
 from faker import Faker
 from optparse import OptionParser
 from flask import Flask, request, redirect, url_for, render_template
 
+fake = Faker()
 app = Flask(__name__)
 app.secret_key = hashlib.sha1(os.urandom(128)).hexdigest()
-fake = Faker()
+data_store = redis.Redis(
+    host='localhost', port=6379, db=0, decode_responses=True)
 
 
 def generate_json(json_schema):
@@ -24,17 +28,22 @@ def generate_json(json_schema):
 def index():
     """Function that does all the calculations."""
     if request.method == 'POST':
-        json_schema = request.form['schema']
+        json_schema = ast.literal_eval(request.form['schema'])
         id_ = fake.uuid4()
-        api_end_point = request.url_root + "json/" + id_
-        return api_end_point
+        if not data_store.exists(id_):
+            data_store.hmset(id_, json_schema)
+            api_end_point = request.url_root + "json/" + id_
+            return api_end_point
+        else:
+            index()
 
 
 @app.route("/json/<id_>", methods=['GET'])
 def get_json(id_):
     """Function that does all the calculations."""
     if request.method == 'GET':
-        return id_
+        json_schema = data_store.hgetall(id_)
+        return generate_json(json_schema)
 
 if __name__ == "__main__":
     parser = OptionParser()
