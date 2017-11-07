@@ -17,11 +17,60 @@
       </div>
     </nav>
     <div class="container-fluid">
-      <div id="wrap">
-
+        <div id="builder-basic" class="query-builder form-inline">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-warning reset" id="btn-reset" data-target="basic">Reset</button>
+            <button class="btn btn-primary parse-json" id="btn-submit" data-target="basic">Submit</button>
+        </div>
     </div>
     <div id="footer">
       <p>View on GitHub. <a href="https://github.com/Dineshkarthik/json-generator-api"><i class="fa fa-github"></i></a></p>
     </div>
   </body>
 </html>
+<script type="text/javascript">
+    var rules_basic = {
+        rules: [{
+        id: 'name',
+        operator: 'equal',
+        value: "user_name" }
+    ]
+};
+
+$('#builder-basic').queryBuilder({
+  plugins: ['bt-tooltip-errors'],
+
+  filters: [{
+    id: 'name',
+    label: 'Full Name',
+    type: 'string',
+    operators: ['equal']
+  }, {
+    id: 'first_name',
+    label: 'First Name',
+    type: 'string',
+    operators: ['equal']
+  }, {
+    id: 'last_name',
+    label: 'Last Name',
+    type: 'string',
+    operators: ['equal']
+  }
+  ],
+
+  rules: rules_basic
+});
+
+$('#btn-reset').on('click', function() {
+  $('#builder-basic').queryBuilder('reset');
+});
+
+$('#btn-submit').on('click', function() {
+  var result = $('#builder-basic').queryBuilder('getRules');
+  
+  if (!$.isEmptyObject(result)) {
+    alert(JSON.stringify(result, null, 2));
+  }
+});
+</script>
