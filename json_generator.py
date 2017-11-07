@@ -6,7 +6,7 @@ import redis
 import hashlib
 from faker import Faker
 from optparse import OptionParser
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, session
 
 fake = Faker()
 app = Flask(__name__)
@@ -33,7 +33,8 @@ def index():
         if not data_store.exists(id_):
             data_store.hmset(id_, json_schema)
             api_end_point = request.url_root + "json/" + id_
-            return api_end_point
+            session["data"] = api_end_point
+            redirect(url_for('success'))
         else:
             index()
     return render_template('index.html')
@@ -45,6 +46,13 @@ def get_json(id_):
     if request.method == 'GET':
         json_schema = data_store.hgetall(id_)
         return generate_json(json_schema)
+
+
+@app.route("/success", methods=['GET'])
+def success():
+    """Function to render stats page."""
+    return render_template('success.html', data=session["data"])
+
 
 if __name__ == "__main__":
     parser = OptionParser()
